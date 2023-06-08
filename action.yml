@@ -9,7 +9,8 @@ inputs:
     required: false
     default: "false"
 branding:
-  color: green
+  icon: "download-cloud"
+  color: "purple"
 runs:
   using: "node16"
   main: "lib/index.js"
