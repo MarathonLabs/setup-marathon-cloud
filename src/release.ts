@@ -3,11 +3,7 @@ import * as tc from '@actions/tool-cache';
 import * as fs from 'fs';
 import { platform } from 'os';
 import path from 'path';
-import {
-  isLatestVersion,
-  releaseArtifactURL,
-  resolveLatestVersion,
-} from './gh';
+import { releaseArtifactURL } from './gh';
 import { sha256File } from './hash';
 
 const TOOL_NAME = 'marathon-cloud';
@@ -51,12 +47,8 @@ export interface BinaryArtifact {
 // platform is resolved automatically if not specified.
 export async function getReleaseArtifact(
   version: string,
-  platform?: Platform
+  platform?: Platform,
 ): Promise<BinaryArtifact> {
-  if (isLatestVersion(version)) {
-    version = await resolveLatestVersion();
-  }
-
   platform = platform || resolvePlatform();
   const extension = resolveExtension(platform);
 
@@ -82,11 +74,11 @@ function resolveBinaryPath(artifact: BinaryArtifact, dir: string): string {
 async function verifyChecksum(
   artifactPath: string,
   artifactName: string,
-  checksumPath: string
+  checksumPath: string,
 ) {
   const actualChecksum = await sha256File(artifactPath);
   core.debug(
-    `calculated sha256 checksum of ${artifactName}: ${actualChecksum}`
+    `calculated sha256 checksum of ${artifactName}: ${actualChecksum}`,
   );
 
   // format:
@@ -97,17 +89,17 @@ async function verifyChecksum(
     .split('\n')
     .map((l: string) => l.split(/\s+/));
   const expectedChecksum = checksumLines.find(
-    (l) => l[1].trim() === artifactName
+    (l) => l[1].trim() === artifactName,
   );
   if (!expectedChecksum) {
     throw new Error(
-      `No checksum found for ${artifactName} from ${checksumPath}`
+      `No checksum found for ${artifactName} from ${checksumPath}`,
     );
   }
 
   if (expectedChecksum[0] !== actualChecksum) {
     throw new Error(
-      `Checksum mismatch: expected ${expectedChecksum[0]}, got ${actualChecksum}`
+      `Checksum mismatch: expected ${expectedChecksum[0]}, got ${actualChecksum}`,
     );
   }
 }
@@ -124,7 +116,7 @@ async function downloadAndCache(artifact: BinaryArtifact): Promise<string> {
   await verifyChecksum(
     artifactZipball,
     artifact.artifactName,
-    artifactChecksum
+    artifactChecksum,
   );
   core.debug(`Verified checksum of ${artifactZipball}`);
 
@@ -136,7 +128,7 @@ async function downloadAndCache(artifact: BinaryArtifact): Promise<string> {
   const cachedDir = await tc.cacheDir(
     artifactFolder,
     TOOL_NAME,
-    artifact.version
+    artifact.version,
   );
   const rv = resolveBinaryPath(artifact, cachedDir);
   core.debug(`Cached ${TOOL_NAME} to ${rv}`);
@@ -147,7 +139,7 @@ async function downloadAndCache(artifact: BinaryArtifact): Promise<string> {
 // setupArtifact prepares the tool binary and adds it to PATH.
 export async function setupArtifact(
   artifact: BinaryArtifact,
-  skipCache?: boolean
+  skipCache?: boolean,
 ) {
   let cachedDir = '';
 
