@@ -9,13 +9,13 @@ export function isLatestVersion(version: string): boolean {
 
 export async function resolveLatestVersion(): Promise<string> {
   core.warning(
-    `setup-marathon-cloud@v1 supports marathon-cloud cli up to 0.3.X. To use marathon-cloud cli v1+ use setup-marathon-cloud@v2`
+    `setup-marathon-cloud@v1 supports marathon-cloud cli up to 0.3.X. To use marathon-cloud cli v1+ use setup-marathon-cloud@v2`,
   );
-  return "0.3.11"
+  return '0.3.11';
 }
 
 export function releaseArtifactURL(paths: string[]): string {
   return `https://github.com/${REPO_OWNER}/${REPO}/releases/download/${paths.join(
-    '/'
+    '/',
   )}`;
 }
