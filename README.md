@@ -6,7 +6,7 @@ This action helps you to setup [marathon-cloud][] in your GitHub Actions workflo
 
 |          Name           | Description                                                                                                                             | Default  | Example |
 | :---------------------: | --------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-|  `version` (optional)   | The version of to use. Please see the following section [marathon-cloud version](#marathon-cloud-version) for details.                  | `latest` | `0.1.1` |
+|  `version` (optional)   | The version of to use. Please see the following section [marathon-cloud version](#marathon-cloud-version) for details.                  | `latest` | `0.3.11` |
 | `skip-cache` (optional) | Skip discovering the marathon-cloud from cache. By setting this to true will force to download the marathon-cloud from GitHub releases. | `false`  | `true`  |
 
 ## Usage Examples
@@ -16,7 +16,7 @@ This action helps you to setup [marathon-cloud][] in your GitHub Actions workflo
 ```yaml
 - uses: MarathonLabs/setup-marathon-cloud@1.0.0
   with:
-    version: "0.1.1"
+    version: "0.3.11"
 ```
 
 ### Use Latest Version
@@ -40,13 +40,21 @@ This action helps you to setup [marathon-cloud][] in your GitHub Actions workflo
 ```yaml
 - uses: MarathonLabs/setup-marathon-cloud@1.0.0
   with:
-    version: "0.1.1"
+    version: "0.3.11"
     skip-cache: "true"
 ```
 
 ## marathon-cloud version
 
 If the `version` is not set, or is one of `latest` or `*`, the action will try to use the latest version of marathon-cloud.
+
+Support matrix:
+| action version  |  cli version |
+|---------------- | ------------ |
+|       v2        | 1.0.0..2.0.0 |
+|       v1        | <1.0.0       |
+
+
 However, due to the GitHub API rate limiting settings, this action requires to pass in the `GITHUB_TOKEN` to the environment variable. If this environment variable is not set, one will see error similar to the following:
 
 ```
