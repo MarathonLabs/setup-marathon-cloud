@@ -23,6 +23,7 @@ This action helps you to setup [marathon-cloud][] in your GitHub Actions workflo
 
 > **NOTE**
 > We recommend to use a specific version of marathon-cloud to have consistent behavior.
+> If you choose to use latest with v1 action then it will use latest supported version for v1 which is 0.3.11
 
 ```yaml
 - uses: MarathonLabs/setup-marathon-cloud@1.0.0
@@ -47,12 +48,13 @@ This action helps you to setup [marathon-cloud][] in your GitHub Actions workflo
 ## marathon-cloud version
 
 If the `version` is not set, or is one of `latest` or `*`, the action will try to use the latest version of marathon-cloud.
+For `v1` action the latest supported version is 0.3.11. Any version starting with 1.0.0 will be incompatible.
 
 Support matrix:
-| action version  |  cli version |
-|---------------- | ------------ |
-|       v2        | 1.0.0..2.0.0 |
-|       v1        | <1.0.0       |
+| action version  |  cli version supported | `latest` version |
+|---------------- | ---------------------- | ---------------- |
+|       v2        | 1.0.0..2.0.0           | not supported    |
+|       v1        | <1.0.0                 | 0.3.11           |
 
 
 However, due to the GitHub API rate limiting settings, this action requires to pass in the `GITHUB_TOKEN` to the environment variable. If this environment variable is not set, one will see error similar to the following:
