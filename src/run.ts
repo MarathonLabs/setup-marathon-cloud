@@ -15,7 +15,9 @@ async function main() {
 
     await setupArtifact(artifact, skipCache);
   } else {
-    core.setFailed(`Unsupported cli version ${version}. This action supports version ${1}`);
+    core.setFailed(
+      `Unsupported cli version ${version}. This action supports version ${1}`,
+    );
   }
 }
 

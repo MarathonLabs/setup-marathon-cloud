@@ -1,4 +1,4 @@
-import { validateMajorVersion } from "./semver";
+import { validateMajorVersion } from './semver';
 
 test('versionValidation', () => {
   ['1', '1.0.0', '1.2.3'].forEach((v) => {
