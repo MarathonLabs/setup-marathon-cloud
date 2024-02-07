@@ -22,5 +22,4 @@ jobs:
     with:
       version: ${{ matrix.version }}
       skip-cache: ${{ matrix.skip-cache }}
-      with-github-token: 'false'
     secrets: inherit
