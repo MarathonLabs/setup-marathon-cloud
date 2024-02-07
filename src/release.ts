@@ -128,17 +128,14 @@ async function downloadAndCache(artifact: BinaryArtifact): Promise<string> {
   );
   core.debug(`Verified checksum of ${artifactZipball}`);
 
-  const artifactFolder = platform.name.startsWith('win')
+  const extractedPath = platform.name.startsWith('win')
     ? await tc.extractZip(artifactZipball)
     : await tc.extractTar(artifactZipball);
-  core.debug(`Extracted ${artifactZipball} to ${artifactFolder}`);
-  const actualFolder = fs.readdirSync(artifactFolder)[0];
+  core.debug(`Extracted ${artifactZipball} to ${extractedPath}`);
+  const archiveName = fs.readdirSync(extractedPath)[0];
+  const archivePath = path.join(extractedPath, archiveName);
 
-  const cachedDir = await tc.cacheDir(
-    actualFolder,
-    TOOL_NAME,
-    artifact.version,
-  );
+  const cachedDir = await tc.cacheDir(archivePath, TOOL_NAME, artifact.version);
   const rv = resolveBinaryPath(artifact, cachedDir);
   core.debug(`Cached ${TOOL_NAME} to ${rv}`);
 
