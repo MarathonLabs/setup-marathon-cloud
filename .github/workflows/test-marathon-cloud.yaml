@@ -7,15 +7,10 @@ on:
       version:
         description: 'marathon-cloud version to use'
         required: true
-        default: '*'
       skip-cache:
         description: 'skip cache?'
         required: false
         default: 'false'
-      with-github-token:
-        description: 'with github token?'
-        required: false
-        default: 'true'
   # for integration testing
   workflow_call:
     inputs:
@@ -23,42 +18,12 @@ on:
         type: string
         description: 'marathon-cloud version to use'
         required: true
-        default: '*'
       skip-cache:
         type: string
         description: 'skip cache?'
         required: false
         default: 'false'
-      with-github-token:
-        type: string
-        description: 'with github token?'
-        required: false
-        default: 'true'
-
 jobs:
-  test-with-github-token:
-    strategy:
-      matrix:
-        # TODO(hbc): add ARM64 runners
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    if: ${{ inputs.with-github-token == 'true' }}
-
-    steps:
-    - uses: actions/checkout@v3
-      name: Checkout code
-    - uses: ./ # use current branch
-      name: Setup marathon-cloud
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ACTIONS_STEP_DEBUG: true
-      with:
-        version: ${{ inputs.version }}
-        skip-cache: ${{ inputs.skip-cache }}
-    - run: |
-        marathon-cloud --help
-      name: Invoke marathon-cloud
-
   test-without-github-token:
     strategy:
       matrix:

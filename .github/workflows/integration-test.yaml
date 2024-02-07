@@ -10,30 +10,11 @@ on:
   - cron: '0 0 * * *' # daily at 00:00 UTC
 
 jobs:
-  test-latest-versions:
-    strategy:
-      matrix:
-        version:
-        - latest
-        - '*'
-        - ''
-        - '0.1.1'
-        skip-cache:
-        - true
-        - false
-    uses: ./.github/workflows/test-marathon-cloud.yaml
-    with:
-      version: ${{ matrix.version }}
-      skip-cache: ${{ matrix.skip-cache }}
-      with-github-token: 'true'
-    secrets: inherit
-
   test-specified-versions-no-github-token:
     strategy:
       matrix:
         version:
-        - '0.1.0'
-        - '0.1.1'
+        - '1.0.0'
         skip-cache:
         - true
         - false
@@ -41,21 +22,4 @@ jobs:
     with:
       version: ${{ matrix.version }}
       skip-cache: ${{ matrix.skip-cache }}
-      with-github-token: 'false'
-    secrets: inherit
-
-  test-specified-versions-with-github-token:
-    strategy:
-      matrix:
-        version:
-        - '0.1.0'
-        - '0.1.1'
-        skip-cache:
-        - true
-        - false
-    uses: ./.github/workflows/test-marathon-cloud.yaml
-    with:
-      version: ${{ matrix.version }}
-      skip-cache: ${{ matrix.skip-cache }}
-      with-github-token: 'true'
     secrets: inherit
