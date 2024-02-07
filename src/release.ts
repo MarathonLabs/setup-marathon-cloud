@@ -132,9 +132,10 @@ async function downloadAndCache(artifact: BinaryArtifact): Promise<string> {
     ? await tc.extractZip(artifactZipball)
     : await tc.extractTar(artifactZipball);
   core.debug(`Extracted ${artifactZipball} to ${artifactFolder}`);
+  const actualFolder = fs.readdirSync(artifactFolder)[0];
 
   const cachedDir = await tc.cacheDir(
-    artifactFolder,
+    actualFolder,
     TOOL_NAME,
     artifact.version,
   );
