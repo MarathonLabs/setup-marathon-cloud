@@ -3,32 +3,36 @@ import * as tc from '@actions/tool-cache';
 import * as fs from 'fs';
 import { platform } from 'os';
 import path from 'path';
-import {
-  isLatestVersion,
-  releaseArtifactURL,
-  resolveLatestVersion,
-} from './gh';
+import { releaseArtifactURL } from './gh';
 import { sha256File } from './hash';
 
 const TOOL_NAME = 'marathon-cloud';
 
 export type Platform =
-  | 'darwin_all'
-  | 'linux_amd64'
-  | 'linux_arm64'
-  | 'windows_amd64';
+  | 'universal-apple-darwin'
+  | 'x86_64-unknown-linux-gnu'
+  | 'x86_64-unknown-linux-musl'
+  | 'aarch64-unknown-linux-gnu'
+  | 'aarch64-unknown-linux-musl'
+  | 'arm-unknown-linux-gnueabihf'
+  | 'arm-unknown-linux-musleabihf'
+  | 'i686-unknown-linux-gnu'
+  | 'i686-unknown-linux-musl'
+  | 'x86_64-pc-windows-gnu'
+  | 'x86_64-pc-windows-msvc'
+  | 'i686-pc-windows-msvc';
 
 function resolvePlatform(): Platform {
   const platform = process.platform;
   const arch = process.arch;
   if (platform === 'darwin') {
-    return 'darwin_all';
+    return 'universal-apple-darwin';
   } else if (platform === 'linux' && arch === 'x64') {
-    return 'linux_amd64';
+    return 'x86_64-unknown-linux-gnu';
   } else if (platform === 'linux' && arch === 'arm64') {
-    return 'linux_arm64';
+    return 'aarch64-unknown-linux-gnu';
   } else if (platform === 'win32' && arch === 'x64') {
-    return 'windows_amd64';
+    return 'x86_64-pc-windows-msvc';
   } else {
     throw new Error(`Unsupported platform: ${platform}_${arch}`);
   }
@@ -53,14 +57,10 @@ export async function getReleaseArtifact(
   version: string,
   platform?: Platform,
 ): Promise<BinaryArtifact> {
-  if (isLatestVersion(version)) {
-    version = await resolveLatestVersion();
-  }
-
   platform = platform || resolvePlatform();
   const extension = resolveExtension(platform);
 
-  const artifactName = `${TOOL_NAME}_${platform}-${version}.${extension}`;
+  const artifactName = `${TOOL_NAME}_v${version}-${platform}.${extension}`;
 
   return {
     version,
@@ -171,7 +171,9 @@ export async function setupArtifact(
 
 function resolveExtension(platform: Platform): string {
   switch (platform) {
-    case 'windows_amd64':
+    case 'x86_64-pc-windows-gnu':
+    case 'x86_64-pc-windows-msvc':
+    case 'i686-pc-windows-msvc':
       return 'zip';
     default:
       return 'tar.gz';

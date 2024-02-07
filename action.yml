@@ -2,8 +2,8 @@ name: Setup marathon-cloud
 description: Setup marathon-cloud in GitHub Actions
 inputs:
   version:
-    description: "The version of marathon-cloud to use. Defaults to the latest version."
-    required: false
+    description: "The version of marathon-cloud to use"
+    required: true
   skip-cache:
     description: 'Skip cache check? When set to "true", the action will always download the latest version.'
     required: false
