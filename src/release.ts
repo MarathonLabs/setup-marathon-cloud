@@ -53,14 +53,14 @@ export interface BinaryArtifact {
 
 // getReleaseArtifact retrieves a release artifact with specified version and platform.
 // platform is resolved automatically if not specified.
-export async function getReleaseArtifact(
+export function getReleaseArtifact(
   version: string,
   platform?: Platform,
-): Promise<BinaryArtifact> {
+): BinaryArtifact {
   platform = platform || resolvePlatform();
   const extension = resolveExtension(platform);
 
-  const artifactName = `${TOOL_NAME}_v${version}-${platform}.${extension}`;
+  const artifactName = `${TOOL_NAME}-v${version}-${platform}.${extension}`;
 
   return {
     version,
