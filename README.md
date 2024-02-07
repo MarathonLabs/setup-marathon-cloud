@@ -6,7 +6,7 @@ This action helps you to setup [marathon-cloud][] in your GitHub Actions workflo
 
 |          Name           | Description                                                                                                                             | Default  | Example |
 | :---------------------: | --------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-|  `version` (required)   | The version of to use. Please see the following section [marathon-cloud version](#marathon-cloud-version) for details.                  | `latest` | `0.3.11` |
+|  `version` (required)   | The version of to use. Please see the following section [marathon-cloud version](#marathon-cloud-version) for details.                  |          | `1.0.0` |
 | `skip-cache` (optional) | Skip discovering the marathon-cloud from cache. By setting this to true will force to download the marathon-cloud from GitHub releases. | `false`  | `true`  |
 
 ## Usage Examples
