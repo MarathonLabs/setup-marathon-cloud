@@ -7,15 +7,10 @@ on:
       version:
         description: 'marathon-cloud version to use'
         required: true
-        default: '*'
       skip-cache:
         description: 'skip cache?'
         required: false
         default: 'false'
-      with-github-token:
-        description: 'with github token?'
-        required: false
-        default: 'true'
   # for integration testing
   workflow_call:
     inputs:
@@ -23,18 +18,11 @@ on:
         type: string
         description: 'marathon-cloud version to use'
         required: true
-        default: '*'
       skip-cache:
         type: string
         description: 'skip cache?'
         required: false
         default: 'false'
-      with-github-token:
-        type: string
-        description: 'with github token?'
-        required: false
-        default: 'true'
-
 jobs:
   test-with-github-token:
     strategy:
