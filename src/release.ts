@@ -1,10 +1,16 @@
-import * as core from '@actions/core';
-import * as tc from '@actions/tool-cache';
 import * as fs from 'fs';
 import { platform } from 'os';
-import path from 'path';
 import { releaseArtifactURL } from './gh';
 import { sha256File } from './hash';
+import { addPath, debug, info } from '@actions/core';
+import {
+  cacheDir,
+  downloadTool,
+  extractTar,
+  extractZip,
+  find,
+} from '@actions/tool-cache';
+import * as path from 'path';
 
 const TOOL_NAME = 'marathon-cloud';
 
@@ -85,9 +91,7 @@ async function verifyChecksum(
   checksumPath: string,
 ) {
   const actualChecksum = await sha256File(artifactPath);
-  core.debug(
-    `calculated sha256 checksum of ${artifactName}: ${actualChecksum}`,
-  );
+  debug(`calculated sha256 checksum of ${artifactName}: ${actualChecksum}`);
 
   // format:
   //  {checksum}  {filename}
@@ -115,29 +119,29 @@ async function verifyChecksum(
 // downloadAndCache downloads the artifact and caches it.
 // Returns the path to the cached artifact.
 async function downloadAndCache(artifact: BinaryArtifact): Promise<string> {
-  const artifactZipball = await tc.downloadTool(artifact.artifactUrl);
-  core.debug(`Downloaded ${artifact.artifactUrl} to ${artifactZipball}`);
+  const artifactZipball = await downloadTool(artifact.artifactUrl);
+  debug(`Downloaded ${artifact.artifactUrl} to ${artifactZipball}`);
 
-  const artifactChecksum = await tc.downloadTool(artifact.checksumUrl);
-  core.debug(`Downloaded ${artifact.checksumUrl} to ${artifactChecksum}`);
+  const artifactChecksum = await downloadTool(artifact.checksumUrl);
+  debug(`Downloaded ${artifact.checksumUrl} to ${artifactChecksum}`);
 
   await verifyChecksum(
     artifactZipball,
     artifact.artifactName,
     artifactChecksum,
   );
-  core.debug(`Verified checksum of ${artifactZipball}`);
+  debug(`Verified checksum of ${artifactZipball}`);
 
   const extractedPath = platform.name.startsWith('win')
-    ? await tc.extractZip(artifactZipball)
-    : await tc.extractTar(artifactZipball);
-  core.debug(`Extracted ${artifactZipball} to ${extractedPath}`);
+    ? await extractZip(artifactZipball)
+    : await extractTar(artifactZipball);
+  debug(`Extracted ${artifactZipball} to ${extractedPath}`);
   const archiveName = fs.readdirSync(extractedPath)[0];
   const archivePath = path.join(extractedPath, archiveName);
 
-  const cachedDir = await tc.cacheDir(archivePath, TOOL_NAME, artifact.version);
+  const cachedDir = await cacheDir(archivePath, TOOL_NAME, artifact.version);
   const rv = resolveBinaryPath(artifact, cachedDir);
-  core.debug(`Cached ${TOOL_NAME} to ${rv}`);
+  debug(`Cached ${TOOL_NAME} to ${rv}`);
 
   return rv;
 }
@@ -150,21 +154,21 @@ export async function setupArtifact(
   let cachedDir = '';
 
   if (!skipCache) {
-    cachedDir = tc.find(TOOL_NAME, artifact.version);
+    cachedDir = find(TOOL_NAME, artifact.version);
   }
 
   let binaryPath: string;
 
   if (cachedDir) {
     binaryPath = resolveBinaryPath(artifact, cachedDir);
-    core.debug(`Found cached ${TOOL_NAME} at ${binaryPath}`);
+    debug(`Found cached ${TOOL_NAME} at ${binaryPath}`);
   } else {
     binaryPath = await downloadAndCache(artifact);
-    core.debug(`Downloaded and cached ${TOOL_NAME} to ${binaryPath}`);
+    debug(`Downloaded and cached ${TOOL_NAME} to ${binaryPath}`);
   }
 
-  core.addPath(path.dirname(binaryPath));
-  core.info(`Added ${binaryPath} to PATH`);
+  addPath(path.dirname(binaryPath));
+  info(`Added ${binaryPath} to PATH`);
 }
 
 function resolveExtension(platform: Platform): string {
